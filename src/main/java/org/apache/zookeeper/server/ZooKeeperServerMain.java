@@ -70,12 +70,15 @@ public class ZooKeeperServerMain {
     protected void initializeAndRun(String[] args)
         throws ConfigException, IOException
     {
+        // 是否开启log4j的mbean，可以供jmx使用
+        // zookeeper.jmx.log4j.disable=true
         try {
             ManagedUtil.registerLog4jMBeans();
         } catch (JMException e) {
             LOG.warn("Unable to register log4j JMX control", e);
         }
 
+        // zookeeper的相关配置信息都由ServerConfig封装
         ServerConfig config = new ServerConfig();
         if (args.length == 1) {
             config.parse(args[0]);
@@ -83,6 +86,7 @@ public class ZooKeeperServerMain {
             config.parse(args);
         }
 
+        // 通过配置启动zookeeper服务器
         runFromConfig(config);
     }
 
@@ -101,16 +105,17 @@ public class ZooKeeperServerMain {
             // create a file logger url from the command line args
             ZooKeeperServer zkServer = new ZooKeeperServer();
 
-            txnLog = new FileTxnSnapLog(new File(config.dataLogDir), new File(
-                    config.dataDir));
+            txnLog = new FileTxnSnapLog(new File(config.dataLogDir), new File(config.dataDir));
             zkServer.setTxnLogFactory(txnLog);
             zkServer.setTickTime(config.tickTime);
             zkServer.setMinSessionTimeout(config.minSessionTimeout);
             zkServer.setMaxSessionTimeout(config.maxSessionTimeout);
+            // 两种cnxn的实现（NIO或Netty）
             cnxnFactory = ServerCnxnFactory.createFactory();
             cnxnFactory.configure(config.getClientPortAddress(),
                     config.getMaxClientCnxns());
             cnxnFactory.startup(zkServer);
+            // 阻塞，会等到外部kill掉线程或notifyAll时而结束服务
             cnxnFactory.join();
             if (zkServer.isRunning()) {
                 zkServer.shutdown();

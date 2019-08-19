@@ -311,11 +311,13 @@ public class NettyServerCnxnFactory extends ServerCnxnFactory {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getMaxClientCnxnsPerHost() {
         return maxClientCnxns;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setMaxClientCnxnsPerHost(int max) {
         maxClientCnxns = max;
     }

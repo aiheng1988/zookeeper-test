@@ -36,7 +36,9 @@ public class ServerConfig {
     //// to update the "conf" 4letter word
     ////
     protected InetSocketAddress clientPortAddress;
+    // zookeeper数据存放地址
     protected String dataDir;
+    // 日志存放地址
     protected String dataLogDir;
     protected int tickTime = ZooKeeperServer.DEFAULT_TICK_TIME;
     protected int maxClientCnxns;
