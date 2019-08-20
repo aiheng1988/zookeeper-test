@@ -108,6 +108,7 @@ public class QuorumPeerConfig {
                         + " file is missing");
             }
 
+            // 将properties文件中的数据读入到properties对象中
             Properties cfg = new Properties();
             FileInputStream in = new FileInputStream(configFile);
             try {
